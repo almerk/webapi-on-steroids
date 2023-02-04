@@ -2,6 +2,8 @@ namespace WeatherForecast.API;
 
 public class WeatherForecast
 {
+    public string? Id { get; init; }
+
     public DateOnly Date { get; set; }
 
     public int TemperatureC { get; set; }
