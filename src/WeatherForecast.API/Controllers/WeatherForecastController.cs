@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WeatherForecast.API.Services;
 using WeatherForecast.API.Queries;
-//using WeatherForecast.API.Commands;
+using WeatherForecast.API.Commands;
 
 namespace WeatherForecast.API.Controllers;
 
@@ -28,28 +28,28 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("{id}", Name = "GetWeatherForecast")]
     public async Task<IActionResult> GetAsync(string id, CancellationToken cancellationToken)
     {
-       var result = await _service.GetAsync(id, cancellationToken);
+       var result = await _mediator.Send(new GetWeatherForecastByIdQuery(id));
        return Ok(result);
     }
 
     [HttpPost(Name = "AddWeatherForecast")]
     public async Task<IActionResult> AddAsync(CancellationToken cancellationToken)
     {
-        var result = await _service.AddAsync(cancellationToken);
+        var result = await _mediator.Send(new AddWeatherForecastCommand());
         return Ok(result);
     }
 
     [HttpPut("{id}", Name = "UpdateWeatherForecastFull")]
     public async Task<IActionResult> UpdateAsync(string id, CancellationToken cancellationToken)
     {
-       var result = await _service.UpdateAsync(id, cancellationToken);
+       var result = await _mediator.Send(new UpdateWeatherForecastCommand(id), cancellationToken);
        return Ok(result);
     }
 
     [HttpDelete("{id}", Name = "DeleteWeatherForecast")]
-    public async Task<IActionResult> UdpateAsync(string id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        await _service.DeleteAsync(id, cancellationToken);
+        await _mediator.Send(new DeleteWeatherForecastCommand(id), cancellationToken);
         return Ok();
     } 
 }
