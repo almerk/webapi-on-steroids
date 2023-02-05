@@ -7,15 +7,16 @@ public class WeatherForecastService
 {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
-
+    private readonly GuidGenerationService _guidService;
     private readonly ILogger<WeatherForecastService> _logger;
 
-    private ConcurrentDictionary<string, Models.WeatherForecast> _state 
-        = new ConcurrentDictionary<string, Models.WeatherForecast>(GetInitial());
+    private readonly ConcurrentDictionary<string, Models.WeatherForecast> _state;
 
-    public WeatherForecastService(ILogger<WeatherForecastService> logger)
+    public WeatherForecastService(GuidGenerationService guidService, ILogger<WeatherForecastService> logger)
     {
+        _guidService = guidService;
         _logger = logger;
+        _state = new ConcurrentDictionary<string, Models.WeatherForecast>(GetInitial());
     }
 
     public async Task<IEnumerable<Models.WeatherForecast>> GetAsync(CancellationToken cancellationToken)
@@ -36,7 +37,7 @@ public class WeatherForecastService
     public async Task<string> AddAsync(CancellationToken cancellationToken)
     {
         return await Task.Run(() => {
-            var newId = Guid.NewGuid().ToString();
+            var newId = _guidService.New().ToString();
             var @new = new Models.WeatherForecast()
             {
                 Id = newId,
@@ -82,10 +83,10 @@ public class WeatherForecastService
         }, cancellationToken);
     }
 
-    private static Dictionary<string, Models.WeatherForecast> GetInitial()
+    private Dictionary<string, Models.WeatherForecast> GetInitial()
         => Enumerable.Range(1, 5).Select(index => new Models.WeatherForecast
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = _guidService.New().ToString(),
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             TemperatureC = Random.Shared.Next(-20, 55),
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
