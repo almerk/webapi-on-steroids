@@ -5,8 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Mediatr" Version="11.1.0"/>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2"/>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     <PackageReference Include="NewId" Version="4.0.1"/>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
   </ItemGroup>
 </Project>

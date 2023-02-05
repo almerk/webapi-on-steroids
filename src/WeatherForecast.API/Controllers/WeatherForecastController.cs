@@ -1,5 +1,8 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WeatherForecast.API.Services;
+using WeatherForecast.API.Queries;
+//using WeatherForecast.API.Commands;
 
 namespace WeatherForecast.API.Controllers;
 
@@ -8,16 +11,18 @@ namespace WeatherForecast.API.Controllers;
 public class WeatherForecastController : ControllerBase
 {
     private readonly WeatherForecastService _service;
-    public WeatherForecastController(WeatherForecastService service)
+    private readonly IMediator _mediator;
+    public WeatherForecastController(WeatherForecastService service, IMediator mediator)
     {
         _service = service;
+        _mediator = mediator;
     }
 
     [HttpGet(Name = "GetWeatherForecasts")]
     public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
     {
-       var result = await _service.GetAsync(cancellationToken);
-       return Ok(result);
+        var result = await _mediator.Send(new GetAllWeatherForecastsQuery(), cancellationToken);
+        return Ok(result);
     }
 
     [HttpGet("{id}", Name = "GetWeatherForecast")]

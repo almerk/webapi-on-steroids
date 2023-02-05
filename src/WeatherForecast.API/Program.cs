@@ -1,3 +1,4 @@
+using MediatR;
 using WeatherForecast.API.Middlewares;
 using WeatherForecast.API.Services;
 
@@ -11,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<GuidGenerationService>();
 builder.Services.AddSingleton<WeatherForecastService>();
-
+builder.Services.AddMediatR(typeof(Program));
 
 var app = builder.Build();
 
