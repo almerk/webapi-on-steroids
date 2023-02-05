@@ -1,4 +1,4 @@
-namespace WeatherForecast.API;
+namespace WeatherForecast.API.Models;
 
 public class WeatherForecast
 {

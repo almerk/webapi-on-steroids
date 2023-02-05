@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-
 namespace WeatherForecast.API.Services;
 
 public class WeatherForecastService
@@ -11,20 +10,21 @@ public class WeatherForecastService
 
     private readonly ILogger<WeatherForecastService> _logger;
 
-    private ConcurrentDictionary<string, WeatherForecast> _state = new ConcurrentDictionary<string, WeatherForecast>(GetInitial());
+    private ConcurrentDictionary<string, Models.WeatherForecast> _state 
+        = new ConcurrentDictionary<string, Models.WeatherForecast>(GetInitial());
 
     public WeatherForecastService(ILogger<WeatherForecastService> logger)
     {
         _logger = logger;
     }
 
-    public IEnumerable<WeatherForecast> Get()
+    public IEnumerable<Models.WeatherForecast> Get()
     {
         return _state.Values;
     }
 
-    private static Dictionary<string, WeatherForecast> GetInitial()
-        => Enumerable.Range(1, 5).Select(index => new WeatherForecast
+    private static Dictionary<string, Models.WeatherForecast> GetInitial()
+        => Enumerable.Range(1, 5).Select(index => new Models.WeatherForecast
         {
             Id = Guid.NewGuid().ToString(),
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

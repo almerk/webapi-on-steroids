@@ -14,7 +14,7 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    public IEnumerable<Models.WeatherForecast> Get()
     {
        return _service.Get();
     }
