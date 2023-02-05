@@ -14,32 +14,37 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet(Name = "GetWeatherForecasts")]
-    public async Task<IEnumerable<Models.WeatherForecast>> GetAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
     {
-       return await _service.GetAsync(cancellationToken);
+       var result = await _service.GetAsync(cancellationToken);
+       return Ok(result);
     }
 
     [HttpGet("{id}", Name = "GetWeatherForecast")]
-    public async Task<Models.WeatherForecast> GetAsync(string id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAsync(string id, CancellationToken cancellationToken)
     {
-       return await _service.GetAsync(id, cancellationToken);
+       var result = await _service.GetAsync(id, cancellationToken);
+       return Ok(result);
     }
 
     [HttpPost(Name = "AddWeatherForecast")]
-    public async Task<string> AddAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync(CancellationToken cancellationToken)
     {
-        return await _service.AddAsync(cancellationToken);
+        var result = await _service.AddAsync(cancellationToken);
+        return Ok(result);
     }
 
     [HttpPut("{id}", Name = "UpdateWeatherForecastFull")]
-    public async Task<Models.WeatherForecast> UpdateAsync(string id, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateAsync(string id, CancellationToken cancellationToken)
     {
-        return await _service.UpdateAsync(id, cancellationToken);
+       var result = await _service.UpdateAsync(id, cancellationToken);
+       return Ok(result);
     }
 
     [HttpDelete("{id}", Name = "DeleteWeatherForecast")]
-    public async Task UdpateAsync(string id, CancellationToken cancellationToken)
+    public async Task<IActionResult> UdpateAsync(string id, CancellationToken cancellationToken)
     {
         await _service.DeleteAsync(id, cancellationToken);
+        return Ok();
     } 
 }
