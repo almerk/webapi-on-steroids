@@ -18,9 +18,10 @@ public class WeatherForecastService
         _logger = logger;
     }
 
-    public IEnumerable<Models.WeatherForecast> Get()
+    public async Task<IEnumerable<Models.WeatherForecast>> GetAsync(CancellationToken cancellationToken)
     {
-        return _state.Values;
+        await Task.Delay(1000, cancellationToken);
+        return _state.Values.AsEnumerable();
     }
 
     private static Dictionary<string, Models.WeatherForecast> GetInitial()

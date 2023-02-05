@@ -14,8 +14,8 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<Models.WeatherForecast> Get()
+    public async Task<IEnumerable<Models.WeatherForecast>> GetAsync(CancellationToken cancellationToken)
     {
-       return _service.Get();
+       return await _service.GetAsync(cancellationToken);
     }
 }
