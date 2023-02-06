@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using WeatherForecast.API.Services;
 using WeatherForecast.API.Queries;
 using WeatherForecast.API.Commands;
+using LanguageExt.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace WeatherForecast.API.Controllers;
 
@@ -29,7 +31,7 @@ public class WeatherForecastController : ControllerBase
     public async Task<IActionResult> GetAsync(string id, CancellationToken cancellationToken)
     {
        var result = await _mediator.Send(new GetWeatherForecastByIdQuery(id));
-       return Ok(result);
+       return MatchResult(result);
     }
 
     [HttpPost(Name = "AddWeatherForecast")]
@@ -52,4 +54,17 @@ public class WeatherForecastController : ControllerBase
         await _mediator.Send(new DeleteWeatherForecastCommand(id), cancellationToken);
         return Ok();
     } 
+
+    private IActionResult MatchResult<TResult>(Result<TResult> result)
+    {
+        return result.Match<IActionResult> (
+            x => Ok(x),
+            ex => ex switch
+            {
+                KeyNotFoundException => NotFound(),
+                ValidationException v => BadRequest(v.Message), 
+                _ => StatusCode((int)System.Net.HttpStatusCode.InternalServerError, "Unknown internal error")
+            }
+        );
+    }
 }

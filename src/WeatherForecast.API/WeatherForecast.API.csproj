@@ -10,5 +10,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     <PackageReference Include="NewId" Version="4.0.1"/>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
+    <PackageReference Include="LanguageExt.Core" Version="4.4.2"/>
   </ItemGroup>
 </Project>

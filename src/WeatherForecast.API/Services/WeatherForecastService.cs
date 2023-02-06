@@ -1,4 +1,6 @@
 using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
+
 namespace WeatherForecast.API.Services;
 
 public class WeatherForecastService
@@ -25,12 +27,12 @@ public class WeatherForecastService
         return _state.Values.AsEnumerable();
     }
 
-    public async Task<Models.WeatherForecast> GetAsync(string id, CancellationToken cancellationToken)
+    public async Task<Models.WeatherForecast?> FindAsync(string id, CancellationToken cancellationToken)
     {
         await Task.Delay(200, cancellationToken);
-        if (!_state.TryGetValue(id, out var result))
-            throw new InvalidOperationException($"id={id} not found");//TODO: validation
         
+        _state.TryGetValue(id, out var result);
+
         return result;
     }
 
@@ -66,7 +68,7 @@ public class WeatherForecastService
     {
         return await Task.Run(() => {
             if (!_state.TryGetValue(id, out var previous))
-                throw new InvalidOperationException($"id={id} not found"); //TODO: validation
+                throw new ValidationException($"id={id} not found"); //TODO: validation
 
             var update =  new Models.WeatherForecast()
             {
