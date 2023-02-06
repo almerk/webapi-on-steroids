@@ -18,9 +18,8 @@ public class WeatherForecastExistPipelineValidator
 
     public async Task<Result<Models.WeatherForecast>> Handle(GetWeatherForecastByIdQuery request, RequestHandlerDelegate<Result<Models.WeatherForecast>> next, CancellationToken cancellationToken)
     {
-        var result = await _service.FindAsync(request.Id, cancellationToken);
 
-        if (result == null)
+        if (!await EntityExists(request.Id, cancellationToken))
             return new Result<Models.WeatherForecast>(new KeyNotFoundException());
 
         return await next();
@@ -28,11 +27,14 @@ public class WeatherForecastExistPipelineValidator
 
     public async Task<Result<Models.WeatherForecast>> Handle(UpdateWeatherForecastCommand request, RequestHandlerDelegate<Result<Models.WeatherForecast>> next, CancellationToken cancellationToken)
     {
-        var result = await _service.FindAsync(request.Id, cancellationToken);
-
-        if (result == null)
+        if (!await EntityExists(request.Id, cancellationToken))
             return new Result<Models.WeatherForecast>(new KeyNotFoundException());
 
         return await next();
+    }
+
+    private async ValueTask<bool> EntityExists(string id, CancellationToken cancellationToken)
+    {
+        return (await _service.FindAsync(id, cancellationToken)) is not null;
     }
 }
