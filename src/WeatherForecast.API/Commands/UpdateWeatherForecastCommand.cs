@@ -1,7 +1,8 @@
+using LanguageExt.Common;
 using MediatR;
 
 namespace WeatherForecast.API.Commands;
 
 public record UpdateWeatherForecastCommand(string Id)
-    : IRequest<Models.WeatherForecast>
+    : IRequest<Result<Models.WeatherForecast>>
 {}

@@ -68,7 +68,7 @@ public class WeatherForecastService
     {
         return await Task.Run(() => {
             if (!_state.TryGetValue(id, out var previous))
-                throw new ValidationException($"id={id} not found"); //TODO: validation
+                throw new InvalidOperationException($"id={id} not found");
 
             var update =  new Models.WeatherForecast()
             {

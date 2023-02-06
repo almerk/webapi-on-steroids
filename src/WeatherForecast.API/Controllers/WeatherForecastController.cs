@@ -45,7 +45,7 @@ public class WeatherForecastController : ControllerBase
     public async Task<IActionResult> UpdateAsync(string id, CancellationToken cancellationToken)
     {
        var result = await _mediator.Send(new UpdateWeatherForecastCommand(id), cancellationToken);
-       return Ok(result);
+       return MatchResult(result);
     }
 
     [HttpDelete("{id}", Name = "DeleteWeatherForecast")]
