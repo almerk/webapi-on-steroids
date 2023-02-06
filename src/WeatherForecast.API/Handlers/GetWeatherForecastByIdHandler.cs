@@ -18,8 +18,8 @@ public class GetWeatherForecastByIdHandler
     {
         var result = await _service.FindAsync(request.Id, cancellationToken);
 
-        if (result == null)//TODO: move to validation pipeline
-            return new Result<Models.WeatherForecast>(new KeyNotFoundException());
+         if (result == null)//TODO: move to validation pipeline
+             return new Result<Models.WeatherForecast>(new KeyNotFoundException());
 
         return result;
     }

@@ -1,5 +1,9 @@
+using LanguageExt.Common;
 using MediatR;
+using WeatherForecast.API.Commands;
 using WeatherForecast.API.Middlewares;
+using WeatherForecast.API.PipelineValidators;
+using WeatherForecast.API.Queries;
 using WeatherForecast.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<GuidGenerationService>();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMediatR(typeof(Program));
+
+builder.Services.AddTransient(//TODO: register in another way
+        typeof(IPipelineBehavior<GetWeatherForecastByIdQuery, Result<WeatherForecast.API.Models.WeatherForecast>>),
+        typeof(WeatherForecastExistPipelineValidator))
+    .AddTransient(
+        typeof(IPipelineBehavior<UpdateWeatherForecastCommand, Result<WeatherForecast.API.Models.WeatherForecast>>),
+        typeof(WeatherForecastExistPipelineValidator)
+    );
 
 var app = builder.Build();
 
