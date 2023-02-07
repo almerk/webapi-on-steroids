@@ -17,6 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<GuidGenerationService>();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddTransient(//TODO: register in another way
         typeof(IPipelineBehavior<GetWeatherForecastByIdQuery, Result<WeatherForecast.API.Models.WeatherForecast>>),

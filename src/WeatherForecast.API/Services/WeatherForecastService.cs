@@ -1,6 +1,4 @@
 using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
-
 namespace WeatherForecast.API.Services;
 
 public class WeatherForecastService

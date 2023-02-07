@@ -5,6 +5,7 @@ using WeatherForecast.API.Queries;
 using WeatherForecast.API.Commands;
 using LanguageExt.Common;
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 
 namespace WeatherForecast.API.Controllers;
 
@@ -14,17 +15,20 @@ public class WeatherForecastController : ControllerBase
 {
     private readonly WeatherForecastService _service;
     private readonly IMediator _mediator;
-    public WeatherForecastController(WeatherForecastService service, IMediator mediator)
+    private readonly IMapper _mapper;
+
+    public WeatherForecastController(WeatherForecastService service, IMediator mediator, IMapper mapper)
     {
         _service = service;
         _mediator = mediator;
+        _mapper = mapper;
     }
 
     [HttpGet(Name = "GetWeatherForecasts")]
     public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetAllWeatherForecastsQuery(), cancellationToken);
-        return Ok(result);
+        return Ok(_mapper.Map<IEnumerable<Contracts.WeatherForecastResponse>>(result));
     }
 
     [HttpGet("{id}", Name = "GetWeatherForecast")]
@@ -32,7 +36,7 @@ public class WeatherForecastController : ControllerBase
     {
         var parsed = Guid.Parse(id);
         var result = await _mediator.Send(new GetWeatherForecastByIdQuery(parsed));
-        return MatchResult(result);
+        return MatchResult<Models.WeatherForecast, Contracts.WeatherForecastResponse>(result);
     }
 
     [HttpPost(Name = "AddWeatherForecast")]
@@ -47,7 +51,7 @@ public class WeatherForecastController : ControllerBase
     {
         var parsed = Guid.Parse(id);
         var result = await _mediator.Send(new UpdateWeatherForecastCommand(parsed), cancellationToken);
-        return MatchResult(result);
+        return MatchResult<Models.WeatherForecast, Contracts.WeatherForecastResponse>(result);
     }
 
     [HttpDelete("{id}", Name = "DeleteWeatherForecast")]
@@ -58,10 +62,15 @@ public class WeatherForecastController : ControllerBase
         return Ok();
     }
 
-    private IActionResult MatchResult<TResult>(Result<TResult> result)
+    private IActionResult MatchResult<TResult, TMappedResult>(Result<TResult> result)
     {
         return result.Match<IActionResult>(
-            x => Ok(x),
+            x => {
+                if (typeof(TResult) == typeof(TMappedResult))  
+                    return Ok(x);
+                
+                return Ok(_mapper.Map<TMappedResult>(x));
+            },
             ex => ex switch
             {
                 KeyNotFoundException => NotFound(),
