@@ -31,6 +31,12 @@ public static class Extensions
 
     private static bool TryParseSpanFromUrlString(ReadOnlySpan<char> str, out Guid result)
     {
+        if (str.Length != 22)
+        {
+            result = default;
+            return false;
+        }
+
         Span<char> base64Chars = stackalloc char[24];
 
         for (var i = 0; i < 22; i++)
@@ -53,7 +59,6 @@ public static class Extensions
             result = default;
             return false;
         }
-
 
         result = new Guid(guidBytes);
         return true;
