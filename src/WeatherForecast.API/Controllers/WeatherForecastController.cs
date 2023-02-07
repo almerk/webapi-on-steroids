@@ -30,8 +30,9 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("{id}", Name = "GetWeatherForecast")]
     public async Task<IActionResult> GetAsync(string id, CancellationToken cancellationToken)
     {
-       var result = await _mediator.Send(new GetWeatherForecastByIdQuery(id));
-       return MatchResult(result);
+        var parsed = Guid.Parse(id);
+        var result = await _mediator.Send(new GetWeatherForecastByIdQuery(parsed));
+        return MatchResult(result);
     }
 
     [HttpPost(Name = "AddWeatherForecast")]
@@ -44,25 +45,27 @@ public class WeatherForecastController : ControllerBase
     [HttpPut("{id}", Name = "UpdateWeatherForecastFull")]
     public async Task<IActionResult> UpdateAsync(string id, CancellationToken cancellationToken)
     {
-       var result = await _mediator.Send(new UpdateWeatherForecastCommand(id), cancellationToken);
-       return MatchResult(result);
+        var parsed = Guid.Parse(id);
+        var result = await _mediator.Send(new UpdateWeatherForecastCommand(parsed), cancellationToken);
+        return MatchResult(result);
     }
 
     [HttpDelete("{id}", Name = "DeleteWeatherForecast")]
     public async Task<IActionResult> DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        await _mediator.Send(new DeleteWeatherForecastCommand(id), cancellationToken);
+        var parsed = Guid.Parse(id);
+        await _mediator.Send(new DeleteWeatherForecastCommand(parsed), cancellationToken);
         return Ok();
-    } 
+    }
 
     private IActionResult MatchResult<TResult>(Result<TResult> result)
     {
-        return result.Match<IActionResult> (
+        return result.Match<IActionResult>(
             x => Ok(x),
             ex => ex switch
             {
                 KeyNotFoundException => NotFound(),
-                ValidationException v => BadRequest(v.Message), 
+                ValidationException v => BadRequest(v.Message),
                 _ => StatusCode((int)System.Net.HttpStatusCode.InternalServerError, "Unknown internal error")
             }
         );

@@ -19,6 +19,6 @@ public class AddWeatherForecastHandler
     {
         var result = await _service.AddAsync(cancellationToken);
         await _mediator.Publish(new Notifications.WeatherForecastAddedNotification(result));
-        return result;
+        return result.ToString();
     }
 }

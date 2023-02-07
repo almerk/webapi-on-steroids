@@ -3,6 +3,6 @@ using MediatR;
 
 namespace WeatherForecast.API.Commands;
 
-public record UpdateWeatherForecastCommand(string Id)
+public record UpdateWeatherForecastCommand(Guid Id)
     : IRequest<Result<Models.WeatherForecast>>
 {}

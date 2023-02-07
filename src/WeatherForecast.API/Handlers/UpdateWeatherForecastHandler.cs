@@ -17,8 +17,6 @@ public class UpdateWeatherForecastHandler
 
     public async Task<Result<Models.WeatherForecast>> Handle(UpdateWeatherForecastCommand request, CancellationToken cancellationToken)
     {
-        var result = await _service.FindAsync(request.Id, cancellationToken);
-
         return await _service.UpdateAsync(request.Id, cancellationToken);
     }
 }

@@ -12,13 +12,13 @@ public class WeatherForecastService
     private readonly GuidGenerationService _guidService;
     private readonly ILogger<WeatherForecastService> _logger;
 
-    private readonly ConcurrentDictionary<string, Models.WeatherForecast> _state;
+    private readonly ConcurrentDictionary<Guid, Models.WeatherForecast> _state;
 
     public WeatherForecastService(GuidGenerationService guidService, ILogger<WeatherForecastService> logger)
     {
         _guidService = guidService;
         _logger = logger;
-        _state = new ConcurrentDictionary<string, Models.WeatherForecast>(GetInitial());
+        _state = new ConcurrentDictionary<Guid, Models.WeatherForecast>(GetInitial());
     }
 
     public async Task<IEnumerable<Models.WeatherForecast>> GetAsync(CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ public class WeatherForecastService
         return _state.Values.AsEnumerable();
     }
 
-    public async Task<Models.WeatherForecast?> FindAsync(string id, CancellationToken cancellationToken)
+    public async Task<Models.WeatherForecast?> FindAsync(Guid id, CancellationToken cancellationToken)
     {
         await Task.Delay(200, cancellationToken);
         
@@ -36,10 +36,10 @@ public class WeatherForecastService
         return result;
     }
 
-    public async Task<string> AddAsync(CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(CancellationToken cancellationToken)
     {
         return await Task.Run(() => {
-            var newId = _guidService.New().ToString();
+            var newId = _guidService.New();
             var @new = new Models.WeatherForecast()
             {
                 Id = newId,
@@ -55,7 +55,7 @@ public class WeatherForecastService
         }, cancellationToken);  
     }
 
-    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         await Task.Run(() => {
 
@@ -64,7 +64,7 @@ public class WeatherForecastService
         }, cancellationToken);
     }
 
-    public async Task<Models.WeatherForecast> UpdateAsync(string id, CancellationToken cancellationToken)
+    public async Task<Models.WeatherForecast> UpdateAsync(Guid id, CancellationToken cancellationToken)
     {
         return await Task.Run(() => {
             if (!_state.TryGetValue(id, out var previous))
@@ -85,13 +85,13 @@ public class WeatherForecastService
         }, cancellationToken);
     }
 
-    private Dictionary<string, Models.WeatherForecast> GetInitial()
+    private Dictionary<Guid, Models.WeatherForecast> GetInitial()
         => Enumerable.Range(1, 5).Select(index => new Models.WeatherForecast
         {
-            Id = _guidService.New().ToString(),
+            Id = _guidService.New(),
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             TemperatureC = Random.Shared.Next(-20, 55),
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
         })
-        .ToDictionary(x => x.Id ?? string.Empty);
+        .ToDictionary(x => x.Id);
 }

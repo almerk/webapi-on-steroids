@@ -2,7 +2,7 @@ namespace WeatherForecast.API.Models;
 
 public class WeatherForecast
 {
-    public string? Id { get; init; }
+    public Guid Id { get; init; }
 
     public DateOnly Date { get; set; }
 

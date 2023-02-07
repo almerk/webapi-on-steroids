@@ -33,7 +33,7 @@ public class WeatherForecastExistPipelineValidator
         return await next();
     }
 
-    private async ValueTask<bool> EntityExists(string id, CancellationToken cancellationToken)
+    private async ValueTask<bool> EntityExists(Guid id, CancellationToken cancellationToken)
     {
         return (await _service.FindAsync(id, cancellationToken)) is not null;
     }

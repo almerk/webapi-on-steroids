@@ -17,9 +17,9 @@ public class GetWeatherForecastByIdHandler
     public async Task<Result<Models.WeatherForecast>> Handle(GetWeatherForecastByIdQuery request, CancellationToken cancellationToken)
     {
         var result = await _service.FindAsync(request.Id, cancellationToken);
-
-         if (result == null)//TODO: move to validation pipeline
-             return new Result<Models.WeatherForecast>(new KeyNotFoundException());
+       
+       if (result is null)
+            throw new InvalidOperationException($"Cannot find {request.Id}");
 
         return result;
     }

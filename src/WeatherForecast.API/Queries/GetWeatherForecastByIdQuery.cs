@@ -3,6 +3,6 @@ using MediatR;
 
 namespace WeatherForecast.API.Queries;
 
-public record GetWeatherForecastByIdQuery(string Id) 
+public record GetWeatherForecastByIdQuery(Guid Id) 
     : IRequest<Result<Models.WeatherForecast>>
 {}
