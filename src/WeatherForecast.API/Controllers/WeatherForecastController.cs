@@ -11,7 +11,7 @@ using GuidConversion;
 namespace WeatherForecast.API.Controllers;
 
 [ApiController]
-[Route("")]
+[Route("wf")]
 public class WeatherForecastController : ControllerBase
 {
     private readonly WeatherForecastService _service;
