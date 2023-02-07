@@ -6,6 +6,7 @@ using WeatherForecast.API.Commands;
 using LanguageExt.Common;
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using GuidConversion;
 
 namespace WeatherForecast.API.Controllers;
 
@@ -34,7 +35,9 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("{id}", Name = "GetWeatherForecast")]
     public async Task<IActionResult> GetAsync(string id, CancellationToken cancellationToken)
     {
-        var parsed = Guid.Parse(id);
+        if (!id.TryParseGuidFromUrlParameterString(out var parsed))
+            return NotFound();
+
         var result = await _mediator.Send(new GetWeatherForecastByIdQuery(parsed));
         return MatchResult<Models.WeatherForecast, Contracts.WeatherForecastResponse>(result);
     }
@@ -49,7 +52,9 @@ public class WeatherForecastController : ControllerBase
     [HttpPut("{id}", Name = "UpdateWeatherForecastFull")]
     public async Task<IActionResult> UpdateAsync(string id, CancellationToken cancellationToken)
     {
-        var parsed = Guid.Parse(id);
+        if (!id.TryParseGuidFromUrlParameterString(out var parsed))
+            return NotFound();
+
         var result = await _mediator.Send(new UpdateWeatherForecastCommand(parsed), cancellationToken);
         return MatchResult<Models.WeatherForecast, Contracts.WeatherForecastResponse>(result);
     }
@@ -57,7 +62,9 @@ public class WeatherForecastController : ControllerBase
     [HttpDelete("{id}", Name = "DeleteWeatherForecast")]
     public async Task<IActionResult> DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        var parsed = Guid.Parse(id);
+        if (!id.TryParseGuidFromUrlParameterString(out var parsed))
+            return NotFound();
+        
         await _mediator.Send(new DeleteWeatherForecastCommand(parsed), cancellationToken);
         return Ok();
     }
